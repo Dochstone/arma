@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЯДРО / ARMA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f3f0ff',
+                            100: '#e5dbff',
+                            200: '#d0bfff',
+                            300: '#b197fc',
+                            400: '#9775fa',
+                            500: '#845ef7',
+                            600: '#7b3cff',
+                            700: '#5f3dc9',
+                            800: '#4a2d9a',
+                            900: '#321f6d',
+                        },
+                        accent: {
+                            50: '#0b1120',
+                            100: '#0f172a',
+                            200: '#1e293b',
+                            300: '#334155',
+                            400: '#475569',
+                            500: '#64748b',
+                            600: '#94a3b8',
+                            700: '#cbd5e1',
+                            800: '#e2e8f0',
+                            900: '#f1f5f9',
+                        },
+                        cyber: {
+                            400: '#00f0ff',
+                            500: '#00d4ff',
+                            600: '#00b8ff',
+                        },
+                        matrix: '#00ff41'
+                    },
+                    fontFamily: {
+                        mono: ['"Source Code Pro"', 'monospace'],
+                        heading: ['"Orbitron"', 'sans-serif'],
+                        japanese: ['"Noto Sans JP"', 'sans-serif']
+                    },
+                    backgroundImage: {
+                        'cyber-grid': "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2300b8ff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E\")",
+                        'binary-pattern': "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%2300f0ff' d='M12 0l-3 3 3 3 3-3-3-3zm0 18l-3 3 3 3 3-3-3-3zm-7.414 0l-3 3 3 3 3-3-3-3zm0-18l-3 3 3 3 3-3-3-3zm14.828 0l-3 3 3 3 3-3-3-3zm0 18l-3 3 3 3 3-3-3-3zM12 9l-3 3 3 3 3-3-3-3z' opacity='.1'/%3E%3C/svg%3E\")"
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Source+Code+Pro:wght@300;400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background-attachment: fixed;
+        }
+        
+        .text-shadow {
+            text-shadow: 0 0 10px rgba(0,240,255,0.7);
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,180,255,0.3);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(0,180,255,0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 20px rgba(0,180,255,0.8);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(0,180,255,0.5);
+            }
+        }
+        
+        .terminal-line {
+            position: relative;
+        }
+        
+        .terminal-line::before {
+            content: '>';
+            position: absolute;
+            left: -1.5rem;
+            color: #00f0ff;
+            font-weight: bold;
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            border-right: 3px solid #00f0ff;
+            white-space: nowrap;
+            animation: 
+                typing 4s steps(40, end),
+                blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00f0ff; }
+        }
+    </style>
+</head>
+<body class="bg-black font-sans text-gray-100" style="background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%);">
+    <!-- Navigation -->
+    <nav class="bg-black border-b border-cyber-500/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <div class="relative">
+                            <svg class="h-8 w-8 text-cyber-500" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <div class="absolute bottom-0 right-0 h-2 w-2 bg-cyber-500 rounded-full animate-pulse"></div>
+                        </div>
+                        <span class="ml-2 text-xl font-heading tracking-wider text-cyber-500">TG GROUPS <span class="text-white">ARMA</span></span>
+                    </div>
+                </div>
+                <div class="sm:ml-6 sm:flex sm:items-center space-x-4">
+                    <button id="login-btn" class="px-6 py-2 rounded-sm bg-cyber-500 text-black font-bold hover:bg-cyber-400 transition-all duration-200 border-2 border-cyber-500 hover:border-cyber-400">
+                        <span class="text-shadow shadow-black/50">ВОЙТИ</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative py-24 overflow-hidden" style="background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%);">
+        <div class="absolute inset-0 bg-cyber-500/5 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjMDAxNzJiIj48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDVMNSAwWk02IDRMNCA2Wk0tMSAxTDEgLTFaIiBzdHJva2U9IiM4OThhYjgiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=')]">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/90"></div>
+        </div>
+        <div class="relative z-10">
+            <h1 class="text-4xl md:text-6xl font-heading tracking-tight mb-4 text-center">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyber-500 to-white">TG GROUPS ARMA </span>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyber-500 to-white"></span>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyber-500 to-white"></span>
+            </h1>
+            <p class="text-xl max-w-3xl mx-auto mb-12 text-center text-gray-300 font-japanese" style="text-shadow: 0 0 10px rgba(0,240,255,0.3);">
+                Самый легкий и безопасный способ продать свою группу телеграм!
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
+                <div class="bg-black/50 border border-cyber-500/30 p-6 transition-all duration-300 hover:border-cyber-400 group card-hover">
+                    <div class="relative mb-6">
+                        <div class="absolute -inset-1 bg-cyber-500/30 blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="relative bg-black p-4 inline-block border border-cyber-500">
+                            <i class="fas fa-users text-2xl text-cyber-500"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white flex items-center">
+                        <span class="h-1 w-4 bg-cyber-500 mr-2"></span> Автоматизация
+                    </h3>
+                    <p class="text-gray-400">Продавай свои группы не дожидаясь ответа в любое удобное время.</p>
+                </div>
+                <div class="bg-black/50 border border-cyber-500/30 p-6 transition-all duration-300 hover:border-cyber-400 group card-hover">
+                    <div class="relative mb-6">
+                        <div class="absolute -inset-1 bg-cyber-500/30 blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="relative bg-black p-4 inline-block border border-cyber-500">
+                            <i class="fas fa-hand-holding-usd text-2xl text-cyber-500"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white flex items-center">
+                        <span class="h-1 w-4 bg-cyber-500 mr-2"></span> Быстрые сделки
+                    </h3>
+                    <p class="text-gray-400">Быстрые выплаты и транзакции в USDT/USDC/TRON.</p>
+                </div>
+                <div class="bg-black/50 border border-cyber-500/30 p-6 transition-all duration-300 hover:border-cyber-400 group card-hover">
+                    <div class="relative mb-6">
+                        <div class="absolute -inset-1 bg-cyber-500/30 blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="relative bg-black p-4 inline-block border border-cyber-500">
+                            <i class="fas fa-shield-alt text-2xl text-cyber-500"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white flex items-center">
+                        <span class="h-1 w-4 bg-cyber-500 mr-2"></span> Безопасность
+                    </h3>
+                    <p class="text-gray-400">Надежные прозрачные и безопасные сделки. Отслеживайте в своем личном кабинете.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Stats Section -->
+            <div class="bg-black/50 rounded-xl shadow-md p-6 border border-cyber-500/30">
+                <h2 class="text-2xl font-bold mb-6 text-cyber-500">Как продать мою группу в Telegram?</h2>
+
+                <button id="requirements-btn" class="mb-6 px-6 py-2 bg-cyber-500 text-black font-bold rounded-full hover:bg-cyber-400 transition">
+                    Показать требования
+                </button>
+
+                <div id="requirements-content" class="mb-6 bg-black/70 p-6 rounded-lg border border-cyber-500/30 hidden">
+                    <h3 class="text-xl font-bold mb-4 text-cyber-400">Требования к продаже группы:</h3>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-100">
+                        <li>Вы должны быть владельцем (создателем) группы.</li>
+                        <li>Группа должна быть частной.</li>
+                        <li>В настройках группы опция «История чата для новых участников» должна быть установлена на «Видна».</li>
+                        <li>Дата создания группы должна соответствовать указанной в прайс-листе.</li>
+                        <li>Вам нужно предоставить пригласительную ссылку на группу, и мы присоединимся по этой ссылке.</li>
+                        <li>Затем вы должны передать право собственности на группу нам.</li>
+                        <li>Мы проверим группу.</li>
+                        <li>Поздравляем! Вы получите оплату.</li>
+                    </ol>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-black/50 p-4 rounded-lg text-center border border-cyber-500/50 hover:border-cyber-500/100 transition">
+                        <div class="text-cyber-600 mb-2">
+                            <i class="fas fa-tasks text-3xl"></i>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-1">Сегодня</p>
+                        <p class="text-xl font-bold">0</p>
+                    </div>
+                    <div class="bg-black/50 p-4 rounded-lg text-center border border-cyber-500/50 hover:border-cyber-500/100 transition">
+                        <div class="text-cyber-600 mb-2">
+                            <i class="fas fa-dollar-sign text-3xl"></i>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-1">Всего проданных групп</p>
+                        <p class="text-xl font-bold">0</p>
+                    </div>
+                    <div class="bg-black/50 p-4 rounded-lg text-center border border-cyber-500/50 hover:border-cyber-500/100 transition">
+                        <div class="text-cyber-600 mb-2">
+                            <i class="fas fa-coins text-3xl"></i>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-1">Сумма (USDT)</p>
+                        <p id="withdraw-balance" class="text-xl font-bold mb-2">0</p>
+                        <button id="withdraw-btn" class="w-full bg-cyber-500 text-black px-3 py-1 rounded text-sm font-medium hover:bg-cyber-400 transition">
+                            Вывести
+                        </button>
+                    </div>
+                    <div class="bg-black/50 p-4 rounded-lg text-center border border-cyber-500/50 hover:border-cyber-500/100 transition">
+                        <div class="text-cyber-600 mb-2">
+                            <i class="fas fa-print text-3xl"></i>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-1">Активные объявления</p>
+                        <p class="text-xl font-bold">0</p>
+                    </div>
+                </div>
+
+                <p class="text-gray-600 mb-6">.</p>
+                
+                <form id="submit-group-form" class="mb-4">
+                    <div class="flex mb-6 rounded-full overflow-hidden border border-cyber-500/30">
+                        <button type="button" id="toggle-single" class="flex-1 py-3 bg-cyber-500 text-black font-medium hover:bg-cyber-400 transition">
+                            Одна группа
+                        </button>
+                        <button type="button" id="toggle-folder" class="flex-1 py-3 bg-gray-900 text-gray-300 font-medium hover:bg-cyber-400 transition">
+                            Папка
+                        </button>
+                    </div>
+                    
+                    <div id="single-group-container" class="mb-4">
+                        <div class="mb-4">
+                            <label for="task-name" class="block text-gray-500 text-sm font-medium mb-2">Название задачи</label>
+                            <input type="text" id="task-name" placeholder="Название вашей задачи" required
+                                   class="w-full px-3 py-2 bg-gray-800 border border-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray">
+                        </div>
+                        <div>
+                            <label for="single-group" class="block text-gray-500 text-sm font-medium mb-2">Ссылка на группу</label>
+                            <input type="url" id="single-group" placeholder="https://t.me/groupname" required
+                                   class="w-full px-3 py-2 bg-gray-800 border border-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray">
+                        </div>
+                    </div>
+                    
+                    <div id="folder-container" class="mb-4 hidden">
+                        <div class="mb-4">
+                            <label for="folder-task-name" class="block text-gray-500 text-sm font-medium mb-2">Название задачи</label>
+                            <input type="text" id="folder-task-name" placeholder="Название вашей задачи" required
+                                   class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray">
+                        </div>
+                        <div>
+                            <label for="folder-link" class="block text-gray-500 text-sm font-medium mb-2">Ссылка на папку</label>
+                            <input type="url" id="folder-link" placeholder="https://t.me/yourfoldername" required
+                                   class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-cyber-500 text-black px-6 py-2 rounded-full font-medium hover:bg-cyber-400 transition">
+                        Отправить ссылки
+                    </button>
+                </form>
+            </div>
+
+            <!-- Task List -->
+            <div class="bg-black/50 rounded-xl shadow-md p-6 border border-cyber-500/30">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-cyber-500">Список задач</h2>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-cyber-500 font-medium">Все</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="bg-gradient-to-r from-black to-gray-900 border-b border-cyber-500/30">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Задача</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Количество групп</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ожидаемый доход (USDT)</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-gray-700 divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 whitespace-nowrap text-center text-sm text-white">Нет доступных данных</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Telegram Price -->
+        <div class="bg-black/50 rounded-xl shadow-md p-6 mt-8 border border-cyber-500/30">
+            <h2 class="text-2xl font-bold mb-6 text-cyber-500">Стоимость групп</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gradient-to-r from-black to-gray-900 border-b border-cyber-500/30">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">#</th>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Year</th>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">Price (USDT)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-black/30 divide-y divide-gray-700">
+                        <tr>
+
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">1</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">2016</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100 font-medium">7$</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">2</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">2017</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100 font-medium">7$</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">3</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">2018 </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100 font-medium">7$</td>
+                         </tr>
+                        <tr>
+                         <tr class="hover:bg-gray-800/50 transition-colors duration-200">
+                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">4</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">2019</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100 font-medium">5$</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">5</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">2020</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100 font-medium">5$</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">6</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">2021</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100 font-medium">5$</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">7</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">2022</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100 font-medium">5$</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">8</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">2023 (январь-июнь)</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100 font-medium">2.5$</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">9</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">2023 (июль-декабрь)</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100 font-medium">1.5$</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">10</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">2024 (январь-май)</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100 font-medium">0.5$</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-gray-200 py-12 border-t border-cyber-500/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="border border-cyber-500 p-1 mr-3">
+                            <span class="text-cyber-500 font-bold">TG-GROUPS</span>
+                        </div>
+                        <span class="text-xl font-heading tracking-wide">ARMA</span>
+                    </div>
+                    <p class="text-gray-400">Платформа для быстрой и безопасной продажи Телеграм групп</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Нужна помощь?</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <i class="fab fa-telegram text-2xl mr-3 text-blue-400"></i>
+                            <a href="https://t.me/real1stone" class="hover:text-blue-400 transition">Telegram: https://t.me/real1stone</a>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-2xl mr-3 text-blue-400"></i>
+                            <a href="mailto:real1stone@gmail.com" class="hover:text-blue-400 transition">Email: real1stone@gmail.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>Авторские права © ARMA 2025. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Tasks Modal -->
+    <div id="tasks-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-black border border-cyber-500/30 rounded-lg max-w-4xl w-full p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-cyber-500">Список задач</h3>
+                <button id="close-tasks-modal" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-700">
+                    <thead class="bg-gradient-to-r from-black to-gray-900 border-b border-cyber-500/30">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Задача</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Количество групп</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ожидаемый доход (USDT)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">Нет доступных данных</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdraw-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-black border border-cyber-500/30 rounded-lg max-w-md w-full p-6">
+            <div class="text-center">
+                <h3 id="withdraw-title" class="text-2xl font-bold mb-4 text-cyber-500"></h3>
+                <p id="withdraw-message" class="text-gray-300 mb-6"></p>
+                <div id="withdraw-success" class="hidden">
+                    <p class="text-gray-300 mb-4">Свяжитесь с нашим менеджером в Telegram:</p>
+                    <a href="https://t.me/real1stone" class="inline-block bg-cyber-500 text-black px-6 py-2 rounded-full font-bold hover:bg-cyber-400 transition">
+                        @real1stone
+                    </a>
+                </div>
+                <button id="close-withdraw-modal" class="mt-6 px-6 py-2 border border-cyber-500 text-cyber-500 rounded-full hover:bg-cyber-500/10 transition">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-black border border-cyber-500/30 rounded-lg max-w-md w-full p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-cyber-500">Вход в личный кабинет</h3>
+                <button id="close-login-modal" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="login-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <input type="email" id="login-email" required 
+                           class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray-400">
+                </div>
+                <div>
+                    <label for="login-password" class="block text-sm font-medium text-gray-300 mb-1">Пароль</label>
+                    <input type="password" id="login-password" required 
+                           class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray-400">
+                </div>
+                <button type="submit" class="w-full bg-cyber-500 text-black px-6 py-2 rounded-full font-bold hover:bg-cyber-400 transition">
+                    Войти
+                </button>
+                <div class="text-center text-sm text-gray-400">
+                    Нет аккаунта? <a href="#" class="text-cyber-500 hover:underline">Зарегистрироваться</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-6 right-6">
+        <button class="bg-cyber-500 rounded-full p-4 shadow-lg text-black font-bold hover:bg-cyber-400 hover:shadow-xl transition pulse" aria-label="Помощь">
+            <i class="fas fa-question text-xl"></i>
+        </button>
+    </div>
+
+    <script>
+        // Login modal toggle
+        const loginBtn = document.getElementById('login-btn');
+        const loginModal = document.getElementById('login-modal');
+        const closeLoginModal = document.getElementById('close-login-modal');
+        loginBtn.addEventListener('click', () => {
+            loginModal.classList.remove('hidden');
+        });
+        closeLoginModal.addEventListener('click', () => {
+            loginModal.classList.add('hidden');
+        });
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.classList.add('hidden');
+            }
+        });
+
+        // Tasks Modal logic
+        const closeTasksModal = document.getElementById('close-tasks-modal');
+        const tasksModal = document.getElementById('tasks-modal');
+        if (closeTasksModal && tasksModal) {
+            closeTasksModal.addEventListener('click', () => {
+                tasksModal.classList.add('hidden');
+            });
+            tasksModal.addEventListener('click', (e) => {
+                if (e.target === tasksModal) {
+                    tasksModal.classList.add('hidden');
+                }
+            });
+        }
+
+        // Toggle between single group and folder modes
+        const toggleSingle = document.getElementById('toggle-single');
+        const toggleFolder = document.getElementById('toggle-folder');
+        const singleContainer = document.getElementById('single-group-container');
+        const folderContainer = document.getElementById('folder-container');
+        
+        toggleSingle.addEventListener('click', () => {
+            toggleSingle.classList.add('bg-cyber-500', 'text-black');
+            toggleSingle.classList.remove('bg-gray-900', 'text-gray-300');
+            toggleFolder.classList.remove('bg-cyber-500', 'text-black');
+            toggleFolder.classList.add('bg-gray-900', 'text-gray-300');
+            singleContainer.classList.remove('hidden');
+            folderContainer.classList.add('hidden');
+        });
+        
+        toggleFolder.addEventListener('click', () => {
+            toggleFolder.classList.add('bg-cyber-500', 'text-black');
+            toggleFolder.classList.remove('bg-gray-900', 'text-gray-300');
+            toggleSingle.classList.remove('bg-cyber-500', 'text-black');
+            toggleSingle.classList.add('bg-gray-900', 'text-gray-300');
+            folderContainer.classList.remove('hidden');
+            singleContainer.classList.add('hidden');
+        });
+
+        // Requirements toggle
+        const requirementsBtn = document.getElementById('requirements-btn');
+        const requirementsContent = document.getElementById('requirements-content');
+        requirementsBtn.addEventListener('click', function() {
+            const isHidden = requirementsContent.classList.toggle('hidden');
+            this.textContent = isHidden ? 'Показать требования' : 'Скрыть требования';
+        });
+
+        // Login form handler
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            // Обычно отправляется на сервер
+            alert('Вход выполнен успешно!');
+            loginModal.classList.add('hidden');
+            this.reset();
+        });
+
+        // Simple animation trigger
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('shadow-lg');
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('shadow-lg');
+            });
+        });
+
+        // Form validation for group submit form
+        document.getElementById('submit-group-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let link, taskName;
+            
+            if (!folderContainer.classList.contains('hidden')) {
+                taskName = document.getElementById('folder-task-name').value;
+                link = document.getElementById('folder-link').value;
+                if (!taskName) {
+                    alert('Пожалуйста, введите название задачи');
+                    return;
+                }
+                if (!link) {
+                    alert('Пожалуйста, введите ссылку на папку Telegram');
+                    return;
+                }
+                if (!link.startsWith('https://t.me/')) {
+                    alert('Пожалуйста, введите корректную ссылку на папку Telegram, начинающуюся с https://t.me/');
+                    return;
+                }
+            } else {
+                taskName = document.getElementById('task-name').value;
+                link = document.getElementById('single-group').value;
+                if (!taskName) {
+                    alert('Пожалуйста, введите название задачи');
+                    return;
+                }
+                if (!link) {
+                    alert('Пожалуйста, введите ссылку на группу Telegram');
+                    return;
+                }
+                if (!link.startsWith('https://t.me/')) {
+                    alert('Пожалуйста, введите корректную ссылку на группу Telegram, начинающуюся с https://t.me/');
+                    return;
+                }
+            }
+            // Здесь обычно отправляется на сервер
+            alert('Данные успешно отправлены! Мы рассмотрим вашу заявку в ближайшее время.');
+            this.reset();
+        });
+
+        // Withdraw button handler
+        document.getElementById('withdraw-btn').addEventListener('click', function() {
+            const balanceElem = document.getElementById('withdraw-balance');
+            const balance = parseFloat(balanceElem.textContent) || 0;
+            const modal = document.getElementById('withdraw-modal');
+            const title = document.getElementById('withdraw-title');
+            const message = document.getElementById('withdraw-message');
+            const successSection = document.getElementById('withdraw-success');
+            if (balance > 0) {
+                title.textContent = 'Поздравляем!';
+                message.textContent = `Ваш баланс: ${balance} USDT. Для вывода средств свяжитесь с нашим менеджером.`;
+                successSection.classList.remove('hidden');
+            } else {
+                title.textContent = 'Упс!';
+                message.textContent = 'Ваш баланс пуст. Продайте группу, чтобы вывести средства.';
+                successSection.classList.add('hidden');
+            }
+            modal.classList.remove('hidden');
+        });
+
+        // Close withdraw modal handler
+        document.getElementById('close-withdraw-modal').addEventListener('click', function() {
+            document.getElementById('withdraw-modal').classList.add('hidden');
+        });
+        document.getElementById('withdraw-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
