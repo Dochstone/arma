@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ЯДРО / ARMA</title>
+    <title> СТОУН / ARMA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -502,15 +502,17 @@
         </div>
     </div>
 
-    <!-- Login Modal -->
+    <!-- Login/Register Modal -->
     <div id="login-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
         <div class="bg-black border border-cyber-500/30 rounded-lg max-w-md w-full p-8">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-cyber-500">Вход в личный кабинет</h3>
+                <h3 id="auth-title" class="text-2xl font-bold text-cyber-500">Вход в личный кабинет</h3>
                 <button id="close-login-modal" class="text-gray-400 hover:text-white">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
+            
+            <!-- Login Form -->
             <form id="login-form" class="space-y-4">
                 <div>
                     <label for="login-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
@@ -526,7 +528,32 @@
                     Войти
                 </button>
                 <div class="text-center text-sm text-gray-400">
-                    Нет аккаунта? <a href="#" class="text-cyber-500 hover:underline">Зарегистрироваться</a>
+                    Нет аккаунта? <button id="show-register" class="text-cyber-500 hover:underline">Зарегистрироваться</button>
+                </div>
+            </form>
+            
+            <!-- Register Form (hidden by default) -->
+            <form id="register-form" class="space-y-4 hidden">
+                <div>
+                    <label for="register-name" class="block text-sm font-medium text-gray-300 mb-1">Имя</label>
+                    <input type="text" id="register-name" required 
+                           class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray-400">
+                </div>
+                <div>
+                    <label for="register-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <input type="email" id="register-email" required 
+                           class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray-400">
+                </div>
+                <div>
+                    <label for="register-password" class="block text-sm font-medium text-gray-300 mb-1">Пароль</label>
+                    <input type="password" id="register-password" required 
+                           class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray-400">
+                </div>
+                <button type="submit" class="w-full bg-cyber-500 text-black px-6 py-2 rounded-full font-bold hover:bg-cyber-400 transition">
+                    Зарегистрироваться
+                </button>
+                <div class="text-center text-sm text-gray-400">
+                    Уже есть аккаунт? <button id="show-login" class="text-cyber-500 hover:underline">Войти</button>
                 </div>
             </form>
         </div>
@@ -602,8 +629,30 @@
             this.textContent = isHidden ? 'Показать требования' : 'Скрыть требования';
         });
 
+        // Auth form handlers
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const showRegister = document.getElementById('show-register');
+        const showLogin = document.getElementById('show-login');
+        const authTitle = document.getElementById('auth-title');
+
+        // Toggle between login and register forms
+        showRegister.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            authTitle.textContent = 'Регистрация';
+        });
+
+        showLogin.addEventListener('click', function(e) {
+            e.preventDefault();
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            authTitle.textContent = 'Вход в личный кабинет';
+        });
+
         // Login form handler
-        document.getElementById('login-form').addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
@@ -611,6 +660,24 @@
             alert('Вход выполнен успешно!');
             loginModal.classList.add('hidden');
             this.reset();
+        });
+
+        // Register form handler
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            // Обычно отправляется на сервер
+            alert(`Регистрация успешна! Добро пожаловать, ${name}!`);
+            loginModal.classList.add('hidden');
+            this.reset();
+            
+            // Switch back to login form
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            authTitle.textContent = 'Вход в личный кабинет';
         });
 
         // Simple animation trigger
