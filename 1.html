@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>СТОУН / ARMA</title>
+    <title>ЯДРО / ARMA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -58,32 +58,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Source+Code+Pro:wght@300;400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap');
-
+        
         html {
             scroll-behavior: smooth;
         }
-
+        
         body {
             background-attachment: fixed;
         }
-
+        
         .text-shadow {
             text-shadow: 0 0 10px rgba(0,240,255,0.7);
         }
-
+        
         .glow {
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
         }
-
+        
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,180,255,0.3);
         }
-
+        
         .pulse {
             animation: pulse 2s infinite;
         }
-
+        
         @keyframes pulse {
             0% {
                 transform: scale(1);
@@ -98,11 +98,11 @@
                 box-shadow: 0 0 10px rgba(0,180,255,0.5);
             }
         }
-
+        
         .terminal-line {
             position: relative;
         }
-
+        
         .terminal-line::before {
             content: '>';
             position: absolute;
@@ -110,21 +110,21 @@
             color: #00f0ff;
             font-weight: bold;
         }
-
+        
         .typewriter {
             overflow: hidden;
             border-right: 3px solid #00f0ff;
             white-space: nowrap;
-            animation:
+            animation: 
                 typing 4s steps(40, end),
                 blink-caret 0.75s step-end infinite;
         }
-
+        
         @keyframes typing {
             from { width: 0 }
             to { width: 100% }
         }
-
+        
         @keyframes blink-caret {
             from, to { border-color: transparent }
             50% { border-color: #00f0ff; }
@@ -172,7 +172,7 @@
             <p class="text-xl max-w-3xl mx-auto mb-12 text-center text-gray-300 font-japanese" style="text-shadow: 0 0 10px rgba(0,240,255,0.3);">
                 Самый легкий и безопасный способ продать свою группу телеграм!
             </p>
-
+            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
                 <div class="bg-black/50 border border-cyber-500/30 p-6 transition-all duration-300 hover:border-cyber-400 group card-hover">
                     <div class="relative mb-6">
@@ -221,7 +221,7 @@
             <div class="bg-black/50 rounded-xl shadow-md p-6 border border-cyber-500/30">
                 <h2 class="text-2xl font-bold mb-6 text-cyber-500">Как продать мою группу в Telegram?</h2>
 
-                <button id="requirements-btn" class="mb-6 px-6 py-2 bg-cyber-500 text-black font-medium rounded-full hover:bg-cyber-400 transition">
+                <button id="requirements-btn" class="mb-6 px-6 py-2 bg-cyber-500 text-black font-bold rounded-full hover:bg-cyber-400 transition">
                     Показать требования
                 </button>
 
@@ -238,7 +238,7 @@
                         <li>Поздравляем! Вы получите оплату.</li>
                     </ol>
                 </div>
-
+                
                 <div class="grid grid-cols-2 gap-4 mb-8">
                     <div class="bg-black/50 p-4 rounded-lg text-center border border-cyber-500/50 hover:border-cyber-500/100 transition">
                         <div class="text-cyber-600 mb-2">
@@ -274,7 +274,7 @@
                 </div>
 
                 <p class="text-gray-600 mb-6">.</p>
-
+                
                 <form id="submit-group-form" class="mb-4">
                     <div class="flex mb-6 rounded-full overflow-hidden border border-cyber-500/30">
                         <button type="button" id="toggle-single" class="flex-1 py-3 bg-cyber-500 text-black font-medium hover:bg-cyber-400 transition">
@@ -284,7 +284,7 @@
                             Папка
                         </button>
                     </div>
-
+                    
                     <div id="single-group-container" class="mb-4">
                         <div class="mb-4">
                             <label for="task-name" class="block text-gray-500 text-sm font-medium mb-2">Название задачи</label>
@@ -297,7 +297,7 @@
                                    class="w-full px-3 py-2 bg-gray-800 border border-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray">
                         </div>
                     </div>
-
+                    
                     <div id="folder-container" class="mb-4 hidden">
                         <div class="mb-4">
                             <label for="folder-task-name" class="block text-gray-500 text-sm font-medium mb-2">Название задачи</label>
@@ -362,6 +362,7 @@
                     </thead>
                     <tbody class="bg-black/30 divide-y divide-gray-700">
                         <tr>
+
                         </tr>
                         <tr class="hover:bg-gray-800/50 transition-colors duration-200">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">1</td>
@@ -501,58 +502,31 @@
         </div>
     </div>
 
-    <!-- Login/Register Modal -->
+    <!-- Login Modal -->
     <div id="login-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
         <div class="bg-black border border-cyber-500/30 rounded-lg max-w-md w-full p-8">
             <div class="flex justify-between items-center mb-6">
-                <h3 id="auth-title" class="text-2xl font-bold text-cyber-500">Вход в личный кабинет</h3>
+                <h3 class="text-2xl font-bold text-cyber-500">Вход в личный кабинет</h3>
                 <button id="close-login-modal" class="text-gray-400 hover:text-white">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-
-            <!-- Login Form -->
             <form id="login-form" class="space-y-4">
                 <div>
                     <label for="login-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                    <input type="email" id="login-email" required
+                    <input type="email" id="login-email" required 
                            class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray-400">
                 </div>
                 <div>
                     <label for="login-password" class="block text-sm font-medium text-gray-300 mb-1">Пароль</label>
-                    <input type="password" id="login-password" required
+                    <input type="password" id="login-password" required 
                            class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray-400">
                 </div>
                 <button type="submit" class="w-full bg-cyber-500 text-black px-6 py-2 rounded-full font-bold hover:bg-cyber-400 transition">
                     Войти
                 </button>
                 <div class="text-center text-sm text-gray-400">
-                    Нет аккаунта? <button id="show-register" class="text-cyber-500 hover:underline">Зарегистрироваться</button>
-                </div>
-            </form>
-
-            <!-- Register Form (hidden by default) -->
-            <form id="register-form" class="space-y-4 hidden">
-                <div>
-                    <label for="register-name" class="block text-sm font-medium text-gray-300 mb-1">Имя</label>
-                    <input type="text" id="register-name" required
-                           class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray-400">
-                </div>
-                <div>
-                    <label for="register-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                    <input type="email" id="register-email" required
-                           class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray-400">
-                </div>
-                <div>
-                    <label for="register-password" class="block text-sm font-medium text-gray-300 mb-1">Пароль</label>
-                    <input type="password" id="register-password" required
-                           class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-500 text-white placeholder-gray-400">
-                </div>
-                <button type="submit" class="w-full bg-cyber-500 text-black px-6 py-2 rounded-full font-bold hover:bg-cyber-400 transition">
-                    Зарегистрироваться
-                </button>
-                <div class="text-center text-sm text-gray-400">
-                    Уже есть аккаунт? <button id="show-login" class="text-cyber-500 hover:underline">Войти</button>
+                    Нет аккаунта? <a href="#" class="text-cyber-500 hover:underline">Зарегистрироваться</a>
                 </div>
             </form>
         </div>
@@ -601,7 +575,7 @@
         const toggleFolder = document.getElementById('toggle-folder');
         const singleContainer = document.getElementById('single-group-container');
         const folderContainer = document.getElementById('folder-container');
-
+        
         toggleSingle.addEventListener('click', () => {
             toggleSingle.classList.add('bg-cyber-500', 'text-black');
             toggleSingle.classList.remove('bg-gray-900', 'text-gray-300');
@@ -610,7 +584,7 @@
             singleContainer.classList.remove('hidden');
             folderContainer.classList.add('hidden');
         });
-
+        
         toggleFolder.addEventListener('click', () => {
             toggleFolder.classList.add('bg-cyber-500', 'text-black');
             toggleFolder.classList.remove('bg-gray-900', 'text-gray-300');
@@ -628,30 +602,8 @@
             this.textContent = isHidden ? 'Показать требования' : 'Скрыть требования';
         });
 
-        // Auth form handlers
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        const showRegister = document.getElementById('show-register');
-        const showLogin = document.getElementById('show-login');
-        const authTitle = document.getElementById('auth-title');
-
-        // Toggle between login and register forms
-        showRegister.addEventListener('click', function(e) {
-            e.preventDefault();
-            loginForm.classList.add('hidden');
-            registerForm.classList.remove('hidden');
-            authTitle.textContent = 'Регистрация';
-        });
-
-        showLogin.addEventListener('click', function(e) {
-            e.preventDefault();
-            registerForm.classList.add('hidden');
-            loginForm.classList.remove('hidden');
-            authTitle.textContent = 'Вход в личный кабинет';
-        });
-
         // Login form handler
-        loginForm.addEventListener('submit', function(e) {
+        document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
@@ -659,39 +611,6 @@
             alert('Вход выполнен успешно!');
             loginModal.classList.add('hidden');
             this.reset();
-        });
-
-        // Register form handler
-        registerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-
-            // Отправка данных на сервер
-            fetch('http://localhost:3000/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, email, password })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Успех:', data);
-                alert(`Регистрация успешна! Добро пожаловать, ${name}!`);
-                loginModal.classList.add('hidden');
-                registerForm.reset();
-
-                // Переключение обратно на форму входа
-                registerForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
-                authTitle.textContent = 'Вход в личный кабинет';
-            })
-            .catch((error) => {
-                console.error('Ошибка:', error);
-                alert('Ошибка при регистрации.');
-            });
         });
 
         // Simple animation trigger
@@ -708,7 +627,7 @@
         document.getElementById('submit-group-form').addEventListener('submit', function(e) {
             e.preventDefault();
             let link, taskName;
-
+            
             if (!folderContainer.classList.contains('hidden')) {
                 taskName = document.getElementById('folder-task-name').value;
                 link = document.getElementById('folder-link').value;
